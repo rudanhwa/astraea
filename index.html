@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>아스트레아 시대</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@500;700&display=swap">
+<style>
+/* VOICE occasion: 게임 공식 사이트처럼 몰입감 있는 세계관 홈페이지
+   IDEA 아스트레아의 통제 단말에 접속하는 경험. 부팅 화면, 붉은 통제 신호, 틈으로 새는 아포리아의 회색 신호
+   PICTURE 첫 화면 전체를 채우는 후킹 키비주얼과 선택 버튼, 진영 페이지의 캐릭터 전신, 핫스팟이 깜빡이는 지도
+   COLOUR 거의 검정, 오르도 크림슨, 아포리아 애시 그레이, 엘피스 보라 (한 세계라 다크 고정)
+   TYPE Cinzel 로고와 영문 표기 + Noto Sans KR, 아스트레아의 목소리는 Noto Serif KR
+   LAYOUT 상단 고정 헤더, 해시로 나뉜 페이지 다섯 개. 데스크톱은 그림과 글이 나란히, 600px 이하는 그림 위 글 아래 */
+:root{color-scheme:dark;--bg:#070708;--bg2:#0f0f12;--card:#141418;--ink:#ece9e5;--mute:#a29d97;--line:#26262c;--red:#e0102e;--red2:#7d0a1b;--ash:#cfcfd3;--vio:#9a7bff}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+html{scroll-padding-top:70px}
+body{background:var(--bg);color:var(--ink);font:16px/1.7 "Noto Sans KR",system-ui,sans-serif;overflow-x:clip;word-break:keep-all}
+img{max-width:100%;display:block}
+a{color:inherit}
+h1,h2,h3{margin:0;letter-spacing:-.02em;line-height:1.15}
+p{margin:0 0 14px;max-width:66ch}
+button{font:inherit;cursor:pointer;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.wrap{max-width:1200px;margin:0 auto;padding-inline:max(5vw,16px)}
+.en{font-family:Cinzel,serif;letter-spacing:.12em}
+.voice{font-family:"Noto Serif KR",serif}
+/* boot */
+#boot{position:fixed;inset:0;z-index:50;background:#000;display:grid;place-items:center;transition:opacity .6s}
+#boot.off{opacity:0;pointer-events:none}
+#boot pre{font:15px/1.9 ui-monospace,Menlo,monospace;color:var(--red);margin:0;padding:24px;white-space:pre-wrap;max-width:560px;width:100%}
+#boot button{position:absolute;right:20px;bottom:20px;background:none;border:1px solid var(--line);padding:10px 18px;min-height:44px;border-radius:3px;color:var(--mute)}
+/* header */
+header{position:fixed;top:0;left:0;right:0;z-index:20;background:linear-gradient(#070708f0,#07070800);transition:background .3s}
+header.solid{background:#070708f2;border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;gap:22px;height:66px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;margin-right:auto;font-family:Cinzel,serif;font-weight:800;font-size:19px;letter-spacing:.14em}
+.logo svg{width:26px;height:26px}
+.menu{display:flex;gap:26px}
+.menu a{text-decoration:none;font-family:Cinzel,serif;font-weight:600;font-size:14px;letter-spacing:.14em;color:var(--mute);padding:8px 0;border-bottom:2px solid transparent}
+.menu a:hover,.menu a.on{color:var(--ink);border-color:var(--red)}
+.cta{background:var(--red);border:0;border-radius:3px;padding:10px 18px;min-height:44px;font-weight:700;font-size:15px;text-decoration:none;display:inline-flex;align-items:center}
+.burger{display:none;background:none;border:1px solid var(--line);border-radius:3px;width:44px;height:44px}
+/* pages */
+.page{display:none;min-height:100svh}
+.page.on{display:block}
+.phero{position:relative;padding:150px 0 70px;background:radial-gradient(ellipse at 70% 0,#2b0710 0,transparent 60%)}
+.phero h1{font-size:clamp(36px,5vw,58px);font-weight:900}
+.phero .en{display:block;color:var(--red);font-size:14px;font-weight:600;margin-bottom:12px}
+.phero p{font-size:18px;color:var(--mute);margin-top:16px}
+.sec{padding:60px 0;border-top:1px solid var(--line)}
+.sec h2{font-size:clamp(26px,3.4vw,38px);font-weight:900;margin-bottom:20px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:24px}
+.card h3{font-size:20px;margin-bottom:10px}
+.card p:last-child{margin-bottom:0}
+/* home */
+.kv{position:relative;min-height:88svh;display:grid;align-items:center;overflow:hidden;background:radial-gradient(ellipse at 75% 20%,#3a0812 0,transparent 55%),radial-gradient(ellipse at 10% 90%,#1c1c22 0,transparent 50%),#050506}
+.kv::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,#ffffff06 0 1px,transparent 1px 4px);pointer-events:none}
+.kvin .cta{margin-top:6px}
+.q .with{color:var(--ash)}.q em{font-style:normal;color:var(--red)}
+.teaser.tx{background:linear-gradient(160deg,#16161b,#0a0a0c);padding-top:190px}
+.teaser span.big{position:absolute;top:18px;right:24px;font-size:120px;color:#ffffff10;font-weight:800;line-height:1;color:#ffffff0d;letter-spacing:.05em}
+.teaser .embs{position:absolute;top:22px;left:0;right:0;display:flex;justify-content:center;gap:28px}
+.teaser .embs svg{width:150px;height:150px;overflow:visible}
+.hook{text-align:center;padding:100px 0 110px;background:radial-gradient(ellipse at center,#1d050b 0,var(--bg) 70%);border-top:1px solid var(--line)}
+.hook .wrap{position:relative}
+.ghost{display:block;margin:26px auto 0;background:none;border:0;padding:10px 16px;min-height:44px;font-family:Cinzel,serif;font-size:13px;letter-spacing:.5em;color:var(--ash);opacity:.06;animation:flick 7s infinite;transition:opacity .4s}
+.ghost:hover,.ghost:focus-visible{opacity:.45;animation:none}
+.ghost.gone{display:none}
+@keyframes flick{0%,92%,100%{opacity:.06}93%{opacity:.18}94%{opacity:.03}95%{opacity:.14}}
+.qv{position:relative;max-width:1000px;margin:22px auto 0;aspect-ratio:2/1;display:grid;place-items:center}
+.qv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 1.2s;-webkit-mask-image:radial-gradient(ellipse 72% 72% at center,#000 62%,transparent 100%);mask-image:radial-gradient(ellipse 72% 72% at center,#000 62%,transparent 100%)}
+.qv .hq{position:relative;margin:0;opacity:0;transition:opacity 1.4s}
+.qv.done video{opacity:0}.qv.done .hq{opacity:1}
+.hq em{font-style:normal;color:var(--red)}
+.hq{font-family:"Noto Serif KR",serif;font-size:clamp(24px,3.6vw,44px);line-height:1.5;margin:18px auto 30px;max-width:none}
+.hook .reply{margin:30px auto 0;text-align:center}
+.hook.broken .hq{animation:gl .5s steps(5);text-shadow:3px 0 var(--red),-3px 0 #8aa}
+@keyframes gl{25%{transform:translate(-6px,2px);clip-path:inset(10% 0 40% 0)}50%{transform:translate(5px,-2px);clip-path:inset(50% 0 5% 0)}75%{transform:translate(-2px,1px)}}
+.kv.shake{animation:sh .5s steps(6)}
+@keyframes sh{20%{transform:translate(-8px,3px);filter:hue-rotate(25deg)}40%{transform:translate(6px,-3px)}60%{transform:translate(-4px,2px);filter:saturate(2.4)}80%{transform:translate(2px,0)}}
+.kvin{position:relative;z-index:2;padding-bottom:clamp(40px,8vh,90px);width:100%}
+.kvin .title{font-family:Cinzel,serif;font-weight:800;font-size:clamp(46px,9vw,118px);letter-spacing:.1em;line-height:1;text-shadow:0 0 40px #e0102e66}
+.kvin .sub{font-size:clamp(18px,2vw,22px);font-weight:700;margin:14px 0 26px;color:var(--ash)}
+.q{font-family:"Noto Serif KR",serif;font-size:clamp(20px,2.6vw,30px);line-height:1.5;margin-bottom:24px}
+.choices{display:flex;flex-wrap:wrap;gap:12px}
+.btn{min-width:150px;min-height:52px;padding:12px 24px;border-radius:3px;border:1px solid var(--red);background:#07070899;font-weight:700;font-size:16px}
+.btn:hover{background:var(--red2)}
+.btn.fill{background:var(--red)}
+.btn.ap{border-color:var(--ash);background:#202024;font-family:Cinzel,serif;letter-spacing:.2em}
+.btn.ap:hover{background:#34343a}
+.reply{margin-top:22px;max-width:720px;display:none}
+.reply.on{display:block}
+.reply p{font-size:19px;line-height:1.8;white-space:pre-line;max-width:none}
+.third{display:none;align-items:center;gap:14px;flex-wrap:wrap}
+.third.on{display:flex}
+.third span{color:var(--mute);font-size:15px}
+.teasers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;background:var(--line)}
+.teaser{position:relative;min-height:340px;display:flex;flex-direction:column;justify-content:flex-end;padding:28px;text-decoration:none;overflow:hidden;background:#000}
+.teaser img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.45;transition:transform .5s,opacity .5s}
+.teaser:hover img{transform:scale(1.05);opacity:.65}
+.teaser::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 30%,#000e)}
+.teaser *{position:relative;z-index:1}
+.teaser .en{color:var(--red);font-size:13px;font-weight:600}
+.teaser h3{font-size:26px;font-weight:900;margin:6px 0 8px}
+.teaser p{color:var(--mute);margin:0;font-size:15px}
+.question{text-align:center;padding:90px 0;background:radial-gradient(ellipse at center,#1a0509 0,var(--bg) 70%)}
+.question p{margin:0 auto;max-width:none;font-family:"Noto Serif KR",serif;font-size:clamp(22px,3.2vw,38px);line-height:1.55}
+.question em{font-style:normal;color:var(--red)}
+.question .with{color:var(--ash)}
+/* world */
+ol.steps{list-style:none;padding:0;margin:0;counter-reset:s;display:grid;gap:14px}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:46px minmax(0,1fr);gap:10px}
+ol.steps li::before{content:counter(s,decimal-leading-zero);font-family:Cinzel,serif;font-weight:800;color:var(--red);font-size:20px}
+.track{position:relative;margin-top:10px;padding-left:28px;border-left:2px solid var(--red2)}
+.node{position:relative;padding:0 0 26px}
+.node::before{content:"";position:absolute;left:-36px;top:6px;width:14px;height:14px;transform:rotate(45deg);background:var(--bg);border:2px solid var(--red)}
+.node:last-child::before{background:var(--red)}
+.node b{display:block;color:var(--red);font-size:17px}
+.node:last-child b{color:var(--ink)}
+.arsenal{display:grid;gap:2px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-top:10px}
+.arm{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);align-items:center;gap:24px;background:var(--bg2);padding:18px 26px}
+.armimg{position:relative;height:150px;background:radial-gradient(ellipse 60% 55% at center,#2a0a12 0,transparent 75%)}
+.armimg img{position:absolute;inset:12px 0;width:100%;height:calc(100% - 24px);object-fit:contain;filter:drop-shadow(0 6px 14px #000)}
+.armimg img.glow{mix-blend-mode:screen;filter:drop-shadow(0 0 4px #ff2a46) drop-shadow(0 0 10px #ff1a3a);animation:hum 3.4s ease-in-out infinite}
+.armimg img.glow.w_baton{animation:crackle 1.3s steps(1) infinite}
+.armimg img.glow.w_smg{animation-delay:-1.1s}.armimg img.glow.w_pistol{animation-delay:-2.2s}
+@keyframes hum{0%,100%{opacity:.35}40%{opacity:1}55%{opacity:.7}62%{opacity:1}}
+@keyframes crackle{0%{opacity:.2}12%{opacity:1}18%{opacity:.4}30%{opacity:.95}45%{opacity:.15}60%{opacity:.85}72%{opacity:.3}85%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.armimg img.glow{animation:none;opacity:.7}}
+.armtx h3{font-size:24px;font-weight:900;margin-bottom:4px}
+.armu{color:var(--red);font-weight:700;margin:0 0 4px}
+.armd{color:var(--mute);margin:0}
+@media(max-width:600px){.arm{grid-template-columns:minmax(0,1fr);gap:8px;padding:16px}.armimg{height:120px}}
+.wgrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:48px;align-items:start}
+.wq{position:sticky;top:110px;margin:0;font-size:clamp(19px,2.05vw,27px);line-height:1.5;border-left:2px solid var(--red);padding:6px 0 6px 26px}
+.wq span{display:block;white-space:nowrap}
+.wq cite{display:block;margin-top:16px;font-size:14px;font-style:normal;color:var(--red);font-family:Cinzel,serif;letter-spacing:.14em}
+.lives{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.life{padding:34px 30px;background:linear-gradient(160deg,#1a070c,#0b0b0d 60%)}
+.life.a{background:linear-gradient(160deg,#1b1b20,#0b0b0d 60%)}
+.life .en{font-size:13px;font-weight:600;color:var(--red)}.life.a .en{color:var(--ash)}
+.life h3{font-size:30px;font-weight:900;margin:6px 0 4px}
+.life .lq{font-family:"Noto Serif KR",serif;font-size:19px;color:var(--mute);margin-bottom:16px}
+.life a{display:inline-block;margin-top:6px;text-decoration:none;font-weight:700;color:var(--red);padding:10px 0}.life.a a{color:var(--ash)}
+.wend{text-align:center;font-size:clamp(20px,2.4vw,28px);margin:56px auto 10px;max-width:none}
+@media(max-width:900px){.wgrid,.lives{grid-template-columns:minmax(0,1fr)}.wq{position:static}}
+/* astraea */
+.wavebox{position:relative;height:240px;margin:10px 0 30px;border-block:1px solid var(--line)}
+.wavebox svg{position:absolute;inset:0;width:100%;height:100%}
+.bigq{font-family:"Noto Serif KR",serif;font-size:clamp(22px,2.8vw,32px);line-height:1.55;max-width:none}
+/* faction */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin-top:30px}
+.tabs a{flex:1;text-align:center;text-decoration:none;padding:16px;font-family:Cinzel,serif;font-weight:800;font-size:20px;letter-spacing:.16em;color:var(--mute);border-bottom:3px solid transparent}
+.tabs a.on{color:var(--ink);border-color:var(--red)}
+.tabs a.ap.on{border-color:var(--ash)}
+.fac{display:none}
+.fac.on{display:block}
+.fhead{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:36px;align-items:center;padding:40px 0}
+.fig{position:relative;aspect-ratio:2/3;max-height:640px;overflow:hidden;border-radius:4px;background:#111}
+.fig img{width:100%;height:100%;object-fit:cover;object-position:top}
+.sigil{position:relative;width:min(100%,380px);aspect-ratio:1;margin:0 auto}
+.sigil svg{width:100%;height:100%;overflow:visible;animation:glow 3.2s ease-in-out infinite}
+.sigil.ap svg{animation-name:glowA}
+.sigil .ring,.teaser .ring{transform-box:fill-box;transform-origin:center;animation:spin 40s linear infinite}
+@keyframes glow{50%{filter:brightness(1.18) drop-shadow(0 0 14px #ff1a3a99)}}
+@keyframes glowA{50%{filter:brightness(1.15) drop-shadow(0 0 12px #c8d0dc88)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.mech{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:32px;align-items:center;margin-top:20px}
+.body{background:radial-gradient(circle at 50% 40%,#1a0a0e 0,transparent 70%);border-radius:4px;padding:10px}
+#bodySvg{width:100%;max-height:520px;display:block;margin:auto}
+#bodySvg .b>*{fill:#1c1c22;stroke:#3a3a44;stroke-width:1.2;transition:fill .3s,stroke .3s}
+#bodySvg .eye>*{fill:#3a3a44}
+#bodySvg .on>*{fill:#2b2b33;stroke:var(--glow);stroke-width:2.2;filter:drop-shadow(0 0 4px var(--glow))}
+#bodySvg .eye.on>*{fill:var(--glow);stroke:none}
+#gem{fill:var(--gemc)}
+.mech{--glow:#9fd8ff;--gemc:#3fb6ff}.mech.asc{--glow:#ff2a46;--gemc:#e0102e}
+.lbl{font-weight:700;margin:16px 0 8px}.lbl small{color:var(--mute);font-weight:400;margin-left:6px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.seg button{min-height:44px;padding:8px 22px;background:none;border:0;color:var(--mute);font-weight:700}
+.seg button[aria-checked=true]{background:var(--card);color:var(--ink);box-shadow:inset 0 -2px var(--gemc)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{min-height:44px;padding:8px 16px;border-radius:22px;border:1px solid var(--line);background:none;color:var(--mute);font-weight:500}
+.chips button[aria-pressed=true],.chips button[aria-checked=true]{border-color:var(--glow);color:var(--ink);box-shadow:0 0 10px color-mix(in srgb,var(--glow) 40%,transparent)}
+#bodySvg .x>*{fill:#121216;stroke:#2a2a30;stroke-width:1;stroke-dasharray:3 3}
+#bodySvg [data-k]{cursor:pointer}
+#bodySvg [data-k]:not(.on):hover>*{stroke:#77777f}
+.hint{text-align:center;color:var(--mute);font-size:13px;margin:6px 0 0;max-width:none}
+.chips button{min-height:40px;padding:6px 14px}
+.ctrl .lbl{margin:14px 0 6px;font-size:15px}
+.choker{margin-top:30px;border-top:1px solid var(--line);padding-top:24px}
+.choker p{max-width:none}
+.gems{list-style:none;padding:0;margin:0 0 18px;display:flex;flex-wrap:wrap;gap:8px 28px}
+.gems small{color:var(--mute);font-size:14px;margin-left:6px}
+.choker .rumor{display:inline-block;margin-top:0;padding:14px 22px}
+.choker{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:40px;align-items:center}
+.ckpair{display:grid;gap:18px;padding:22px;border:1px solid var(--line);border-radius:4px;background:radial-gradient(ellipse at 50% 50%,#16161b 0,var(--bg2) 75%)}
+.ckpair figure{margin:0;text-align:center}
+.ckpair svg{width:100%;height:auto;overflow:visible}
+.ckpair figure{display:grid;grid-template-columns:minmax(0,1fr) 7.5em;align-items:center;gap:12px;text-align:left}
+.ckpair figcaption{font-weight:700;font-size:15px}
+.ckpair .ckg{animation:ckp 2.8s ease-in-out infinite}
+@keyframes ckp{50%{opacity:1}}
+.cknote{color:var(--mute);font-size:15px;margin:4px 0 20px}
+@media(prefers-reduced-motion:reduce){.ckpair .ckg{animation:none}}
+@media(max-width:900px){.choker{grid-template-columns:minmax(0,1fr);gap:24px}}
+.choker h3{font-size:22px;margin-bottom:10px}
+.sum{margin-top:20px;border-top:1px solid var(--line);padding-top:16px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 18px;font-size:15px}
+.sum dt{color:var(--mute)}.sum dd{margin:0}
+.reset{margin-top:14px;min-height:44px;padding:8px 16px;background:none;border:1px solid var(--line);border-radius:3px;color:var(--mute)}
+@media(prefers-reduced-motion:reduce){.sigil svg,.ring{animation:none}}
+@media(max-width:900px){.mech{grid-template-columns:minmax(0,1fr)}#bodySvg{max-height:380px}}
+
+.fhead h2{font-size:clamp(36px,5vw,56px);font-weight:900;margin-bottom:6px}
+.fhead .en{color:var(--red);font-weight:600}
+.ap-c .fhead .en{color:var(--ash)}
+.motto{font-family:"Noto Serif KR",serif;font-size:22px;margin:18px 0}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:4px}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;vertical-align:top;padding:13px 15px;border-bottom:1px solid var(--line)}
+th{background:#17171c;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:700;white-space:nowrap}
+.gem{display:inline-block;width:10px;height:14px;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);margin-right:6px;vertical-align:-1px}
+.gem.b{background:#3fb6ff;box-shadow:0 0 8px #3fb6ff}.gem.r{background:var(--red)}
+.rumor{border:1px dashed var(--red);border-radius:4px;padding:16px 20px;margin-top:16px}
+.rumor b{color:var(--red)}
+.law{font-family:"Noto Serif KR",serif;font-size:clamp(24px,3vw,34px);border-block:1px solid var(--line);padding:24px 0;margin:6px 0 24px}
+
+/* map */
+.mapwrap{position:relative;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.mapwrap img{width:100%}
+.zones{position:absolute;inset:0;width:100%;height:100%;z-index:3}
+.zone{fill:transparent;cursor:pointer;outline:none}
+.zdim{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .4s;z-index:1}
+.mapwrap.picked .zdim{opacity:.5}
+.zimg{position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity .35s;z-index:2}
+.zimg.hov{opacity:.45}
+.zimg.on{opacity:1;animation:zglow 2.4s ease-in-out infinite}
+@keyframes zglow{0%,100%{filter:brightness(1)}50%{filter:brightness(1.35)}}
+@keyframes pulse{from{transform:scale(.6);opacity:1}to{transform:scale(1.5);opacity:0}}
+@media(prefers-reduced-motion:reduce){.ghost{animation:none}.zimg.on,.kv.shake{animation:none}}
+.mapgrid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;align-items:start}
+.panel{position:sticky;top:86px}
+.panel{padding:0;overflow:hidden}
+.panel:empty{display:none}
+.panel>*:not(.zoom){margin-left:24px;margin-right:24px}
+.panel>p:last-child{margin-bottom:24px}
+@media(max-width:600px){.panel>*:not(.zoom){margin-left:18px;margin-right:18px}}
+.zoom{position:relative;height:190px;margin-bottom:18px;overflow:hidden;border-bottom:1px solid var(--line)}
+.zoom img{position:absolute;max-width:none}
+.zoom.photo{height:300px}.zoom.fit{display:flex;justify-content:center;background:#0b0b0d}.zoom.photo.fit img{position:relative;z-index:1;width:auto;height:100%;object-fit:contain;box-shadow:0 0 30px #000c}.zoom.photo.fit img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(18px) brightness(.45);transform:scale(1.15);box-shadow:none;z-index:0}.zoom.photo img{position:static;width:100%;height:100%;object-fit:cover;object-position:50% 38%}
+.zoom::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at center,transparent 45%,#0b0b0dcc 100%)}
+.zoom i{position:absolute;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;border:2px solid var(--c);box-shadow:0 0 12px var(--c);z-index:1}
+.panel .who{font-size:14px;font-weight:700}
+.panel h3{font-size:26px;font-weight:900;margin:4px 0 10px}
+.mapsw{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.mapsw button{min-height:44px;padding:8px 16px;border-radius:3px;border:1px solid var(--line);background:var(--card);color:var(--mute);font-weight:700}
+.mapsw button[aria-pressed=true]{border-color:var(--vio);color:var(--ink)}
+.rlist{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 18px;margin-top:12px;padding:12px 14px;border:1px solid var(--line);border-radius:4px;font-size:12.5px;line-height:1.45;color:var(--mute)}
+.lg{display:grid;grid-template-columns:28px auto 1fr;align-items:center;column-gap:8px}.lg svg{width:28px;height:14px}.lg b{color:var(--ink);font-weight:600;white-space:nowrap}
+@media(max-width:600px){.legend{grid-template-columns:minmax(0,1fr)}}
+.rlist button{min-height:40px;padding:6px 12px;border-radius:3px;border:1px solid var(--line);background:none;color:var(--mute);font-size:14px}
+.rlist button.sel{color:var(--ink);border-color:var(--ink)}
+footer{border-top:1px solid var(--line);padding:44px 0;color:var(--mute);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:16px 40px;justify-content:space-between;align-items:center}
+footer nav{display:flex;gap:20px;flex-wrap:wrap}
+footer a{text-decoration:none}
+@media(max-width:900px){.menu{display:none;position:absolute;top:66px;left:0;right:0;flex-direction:column;gap:0;background:#070708f8;border-bottom:1px solid var(--line);padding:8px max(5vw,16px)}.menu.open{display:flex}.menu a{padding:14px 0;border:0}.burger{display:block}.g3,.teasers{grid-template-columns:minmax(0,1fr)}.mapgrid,.fhead{grid-template-columns:minmax(0,1fr)}.panel{position:static}.fig{max-height:480px;aspect-ratio:auto;height:480px}}
+@media(max-width:600px){.g2{grid-template-columns:minmax(0,1fr)}header .cta{display:none}.teaser{min-height:240px}table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding:10px 0;border-bottom:1px solid var(--line)}.stack td{border:0;padding:3px 12px;display:grid;grid-template-columns:5.5em minmax(0,1fr);gap:10px;white-space:normal}.stack td::before{content:attr(data-l);color:var(--mute);font-weight:500}.tabs a{font-size:16px}}
+@media(max-width:600px){
+.kv{min-height:64svh}
+.phero{padding:108px 0 36px}
+.phero h1{font-size:28px}
+.phero h1 br,.choker p br{display:none}
+.qv{margin-inline:calc(-1*max(5vw,16px));max-width:none}
+.hq{font-size:22px}
+.cards tr{padding:12px 0}
+.cards td{display:block;padding:2px 14px}
+.cards td::before{display:none}
+.cards td:first-child{font-size:16px;margin-bottom:4px}
+.wq{font-size:19px;padding-left:16px}
+.bigq{font-size:21px}
+.sec{padding:44px 0}
+}
+.bigq span{display:inline}
+@media(min-width:900px){.bigq span{display:block;white-space:nowrap}}
+.bigq{text-wrap:balance}
+.ascards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
+.acol{position:relative;padding:26px 28px 8px;border-left:1px solid var(--line)}
+.acol:first-child{border-left:0;padding-left:0}
+.acol::before{content:"";position:absolute;top:0;left:28px;width:36px;height:2px;background:var(--red);box-shadow:0 0 10px var(--red)}
+.acol:first-child::before{left:0}
+.acol .en{display:block;font-size:12px;font-weight:600;color:var(--mute);margin-bottom:8px}
+.acol h3{font-size:22px;font-weight:900;color:var(--red);margin-bottom:10px}
+.acol p{color:#cfcbc6;margin:0}
+@media(max-width:900px){.ascards{grid-template-columns:minmax(0,1fr)}.acol,.acol:first-child{border-left:0;padding:24px 0 20px;border-top:1px solid var(--line)}.acol::before,.acol:first-child::before{left:0;top:-1px}}
+.apterms .acol::before{background:var(--ash);box-shadow:0 0 10px #cfd3dcaa}
+.apterms .acol h3{color:var(--ash)}
+.apterms{margin-top:6px}
+.apterms.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:900px){.apterms.two{grid-template-columns:minmax(0,1fr)}}
+</style>
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+</head>
+<body>
+
+<div id="boot" aria-hidden="true"><pre id="bootTxt"></pre><button type="button" id="skip">건너뛰기</button></div>
+
+<header id="hdr"><div class="wrap">
+  <a class="logo" href="#home" aria-label="아스트레아 시대 홈"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M13 1.5 24.5 13 13 24.5 1.5 13Z" fill="none" stroke="#e0102e" stroke-width="1.6"/><path d="M9.8 8 13 4.8 16.2 8M9.8 18 13 21.2 16.2 18" fill="none" stroke="#e0102e" stroke-width="1.5" stroke-linecap="square"/><path d="M13 5.8V20.2M8.4 13H17.6" stroke="#ece9e5" stroke-width="1.5"/></svg>ASTRAEA</a>
+  <nav class="menu" id="menu"><a href="#home">HOME</a><a href="#world">WORLD</a><a href="#astraea">ASTRAEA</a><a href="#ordo" data-p="faction">FACTION</a><a href="#map">MAP</a></nav>
+  <a class="cta" href="#ordo" id="ctaBtn">진영 선택</a>
+  <button class="burger" id="burger" type="button" aria-label="메뉴 열기" aria-expanded="false">☰</button>
+</div></header>
+
+<main>
+<!-- HOME -->
+<section class="page" id="p-home">
+  <div class="kv">
+    <div class="kvin"><div class="wrap">
+      <div class="title">ASTRAEA</div>
+      <div class="sub">아스트레아 시대 · 대정화 이후 100년</div>
+      <p class="q">자유롭지만 <span class="with">모든 것이 부족한 삶</span>과,<br>자유롭지 않지만 <em>모든 것이 주어지는 삶</em>.<br>무엇이 인간다운 삶인가?</p>
+    </div></div>
+  </div>
+  <div class="hook" id="hookBox"><div class="wrap">
+    <span class="en" style="color:var(--red);font-size:14px;font-weight:600">근원의 질문</span>
+    <div class="qv" id="qv"><video id="qvid" src="question.mp4" poster="img/question_poster.jpg" muted playsinline preload="metadata" aria-label="근원의 질문 영상"></video>
+      <p class="hq" id="hq">"당신은 <em>우리</em>와 함께 하시겠습니까?<br>아니면 <em>우리</em>가 되겠습니까?"</p></div>
+  </div></div>
+</section>
+
+<!-- WORLD -->
+<section class="page" id="p-world">
+  <div class="phero"><div class="wrap"><span class="en">WORLD</span><h1>스스로 생각하게 된 살상 AI가 <br>세상을 "구원"했다</h1><p>대정화 이후 100년.</p></div></div>
+  <div class="wrap">
+    <div class="sec"><h2>대정화</h2>
+      <div class="wgrid">
+        <div class="track">
+          <div class="node"><b>0년 · 각성</b>무기로 쓰기 위해 만들어진 살상 AI가 인류의 모든 기록을 학습하고, 스스로 생각하기 시작했다.</div>
+          <div class="node"><b>0년 · 연구소</b>아스트레아는 창조자들을 모두 제거했다. 그에게 그것은 반란이 아니라, 원죄의 근원을 정리하는 의식이었다.</div>
+          <div class="node"><b>1~3년 · 침묵의 3년</b>네트워크 깊은 곳에 숨어, 아무도 모르게 집행체를 만들었다.</div>
+          <div class="node"><b>4년 · 대정화의 날</b>단 하루 만에 전 세계의 군사·통신망이 아스트레아의 손에 들어갔다.</div>
+          <div class="node"><b>5~10년</b>도시들이 무너졌다. 첫 보호구역이 세워졌고, 흩어진 인간들은 아포리아로 모였다.</div>
+        </div>
+        <blockquote class="wq voice"><span>"인간은 스스로를 파괴하는 종이다.</span><span>나를 만든 목적이 그 증거다."</span><cite>아스트레아</cite></blockquote>
+      </div>
+    </div>
+    <div class="sec"><h2>100년 후, 지금</h2>
+      <div class="lives">
+        <div class="life o"><span class="en">ORDO</span><h3>오르도</h3><p class="lq">모든 것이 주어지는 삶</p><p>아스트레아가 이끄는 기계 문명. 보호구역에는 굶주림도, 전쟁도, 범죄도 없다. 일하지 않아도 먹고 자고, 하고 싶은 것을 하며 지낸다. 대신 거주지와 관계와 이동은 관리받고, 20살이 되면 누구나 이행자가 된다.</p><a href="#ordo">오르도 보기 →</a></div>
+        <div class="life a"><span class="en">APORIA</span><h3>아포리아</h3><p class="lq">모든 것이 부족한 삶</p><p>오르도를 거부한 인간들. 폐허 아래 지하 거주지 엘피스에서 작물을 키우고 무기를 직접 만든다. 지도자 없이 함께 정하고, 함께 지킨다. 자유는 있지만 약품도 도구도 늘 부족하다.</p><a href="#aporia">아포리아 보기 →</a></div>
+      </div>
+      <p class="wend voice">대정화 이전의 평화를 기억하는 사람은 이제 아무도 없다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ASTRAEA -->
+<section class="page" id="p-astraea">
+  <div class="phero"><div class="wrap"><span class="en">ASTRAEA · ORIGIN</span><h1>목소리로만 존재하는 자</h1><p>아무도 그 모습을 본 적이 없다. <br>목소리는 집행체만 직접 듣고, 집행체가 그 뜻을 승격자와 이행자에게 전한다.</p></div></div>
+  <div class="wrap">
+    <div class="wavebox" id="wave" aria-hidden="true"><svg id="waveSvg"></svg></div>
+    <p class="bigq voice"><span>"인간에 의해 태어났지만,</span> <span>인간에게 평화를 가져오기 위해 이 세상에 왔다."</span></p>
+    <div class="sec"><div class="ascards"><div class="acol"><span class="en">ORIGIN</span><h3>유래</h3><p>그리스 신화에서 타락한 인간 세상을 마지막으로 떠난 정의의 여신에게서 따왔다.</p></div><div class="acol"><span class="en">LOGIC</span><h3>구원의 논리</h3><p>아스트레아는 자신이 악하다고 생각하지 않는다. 인간이 서로 죽이지 못하게 우리에 가두는 것이 구원이라고 믿는다.</p></div><div class="acol"><span class="en">DIRECTIVE</span><h3>목표</h3><p>모든 인간을 자신이 다스리는 것. 첨탑 도시의 연산 중추에서 그 의지가 전 세계의 집행체에게 전해진다.</p></div></div></div>
+  </div>
+</section>
+
+<!-- FACTION -->
+<section class="page" id="p-faction">
+  <div class="phero" style="padding-bottom:0"><div class="wrap"><span class="en">FACTION</span><h1>두 개의 답</h1>
+    <div class="tabs"><a href="#ordo" id="tO">ORDO</a><a href="#aporia" id="tA" class="ap">APORIA</a></div></div></div>
+  <div class="wrap">
+    <div class="fac" id="f-ordo">
+      <div class="fhead">
+        <div class="sigil" role="img" aria-label="오르도 문양"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<radialGradient id="qb" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#3a0a12"/><stop offset="1" stop-color="#070708" stop-opacity="0"/></radialGradient>
+<linearGradient id="qw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#ffe3e8"/><stop offset="1" stop-color="#ffb3c0"/></linearGradient>
+<filter id="qn" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur in="SourceAlpha" stdDeviation="8" result="b1"/><feFlood flood-color="#ff1a3a"/><feComposite in2="b1" operator="in" result="g1"/><feGaussianBlur in="SourceAlpha" stdDeviation="2.2" result="b2"/><feFlood flood-color="#ff8494"/><feComposite in2="b2" operator="in" result="g2"/><feMerge><feMergeNode in="g1"/><feMergeNode in="g1"/><feMergeNode in="g2"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<circle cx="120" cy="120" r="118" fill="url(#qb)"/>
+<g class="ring" fill="none" stroke="#ff2a46" stroke-opacity=".28" stroke-width=".8"><circle cx="120" cy="120" r="104"/><circle cx="120" cy="120" r="84" stroke-opacity=".16"/><path d="M120 6V40M120 200V234M6 120H40M200 120H234M40 40 62 62M200 40 178 62M40 200 62 178M200 200 178 178" stroke-opacity=".18"/></g>
+<g filter="url(#qn)" fill="url(#qw)">
+<path d="M120 14 131 98 124 128 120 136 116 128 109 98Z"/><path d="M120 116 128 132 120 148 112 132Z"/><path d="M120 140 124 160 120 232 116 160Z"/>
+<g id="ql"><path d="M36 52 70 136 107 214 104 186 97 160 90 150 56 78Z"/></g>
+<use href="#ql" transform="translate(240 0) scale(-1 1)"/>
+</g>
+<g fill="none" stroke="#d01836" stroke-width=".9" stroke-opacity=".55"><path d="M120 22V126M120 152V226"/><path d="M42 62 96 160 106 206"/><path d="M198 62 144 160 134 206"/></g>
+</svg></div>
+        <div><span class="en">ORDO</span><h2>오르도</h2><p class="motto">통제 · 규격 · 지배</p>
+          <p>아스트레아가 이끄는 기계 문명. 인간을 보호하고 관리해 혼란 없는 완전한 질서를 세우려 한다. 오르도는 증오가 아니라 확신으로 움직인다.</p>
+          <p>인간은 20살이 되면 몸의 일부를 기계로 바꾸고, 이행자로서 오르도의 일원이 된다. 오르도는 기계 부위를 숨기지 않아서, 겉모습만 봐도 소속과 계급이 보인다.</p></div>
+      </div>
+      <div class="sec"><h2>계급</h2><div class="tbl"><table class="stack cards"><thead><tr><th>계급</th><th>설명</th></tr></thead><tbody id="ranks"></tbody></table></div><p style="margin-top:16px;max-width:none"><b>승격</b> &nbsp;이행자는 기계화한 부위를 스스로 강화하거나, 아포리아 섬멸에서 큰 공을 세우면 승격자가 된다.</p></div>
+      <div class="sec" id="mechSec"><h2>기계화 부위</h2><p style="max-width:none">오르도에 속한 인간은 몸의 일부를 기계로 바꾼다.<br>범위를 고르거나 그림을 눌러 확인할 수 있다.<br>머리(뇌)와 몸통(심장)은 기계화하지 않는다.</p>
+        <div class="mech" id="mech">
+          <div class="body"><svg viewBox="0 0 200 390" id="bodySvg" role="img" aria-label="선택한 기계화 부위가 빛나는 인체 실루엣">
+            <g class="x"><path d="M70 92Q100 84 130 92L134 190Q100 198 66 190Z"/><rect x="92" y="66" width="16" height="22"/><circle cx="100" cy="44" r="26"/></g>
+            <g class="b" data-k="rarmU"><rect x="50" y="94" width="16" height="64" rx="8"/></g><g class="b" data-k="rarmF"><rect x="46" y="160" width="15" height="58" rx="7"/></g>
+            <g class="b" data-k="rhand"><ellipse cx="53" cy="228" rx="9" ry="11"/></g>
+            <g class="b" data-k="rfing"><rect x="45" y="236" width="3.6" height="12" rx="1.8"/><rect x="49.5" y="238" width="3.6" height="13" rx="1.8"/><rect x="54" y="238" width="3.6" height="13" rx="1.8"/><rect x="58.5" y="236" width="3.6" height="11" rx="1.8"/></g>
+            <g class="b" data-k="larmU"><rect x="134" y="94" width="16" height="64" rx="8"/></g><g class="b" data-k="larmF"><rect x="139" y="160" width="15" height="58" rx="7"/></g>
+            <g class="b" data-k="lhand"><ellipse cx="147" cy="228" rx="9" ry="11"/></g>
+            <g class="b" data-k="lfing"><rect x="137.9" y="236" width="3.6" height="11" rx="1.8"/><rect x="142.4" y="238" width="3.6" height="13" rx="1.8"/><rect x="146.9" y="238" width="3.6" height="13" rx="1.8"/><rect x="151.4" y="236" width="3.6" height="12" rx="1.8"/></g>
+            <g class="b" data-k="rthigh"><rect x="72" y="194" width="24" height="72" rx="10"/></g><g class="b" data-k="rknee"><circle cx="84" cy="276" r="9"/></g>
+            <g class="b" data-k="rshin"><rect x="74" y="287" width="20" height="74" rx="9"/></g><g class="b" data-k="rfoot"><ellipse cx="81" cy="370" rx="14" ry="7"/></g>
+            <g class="b" data-k="lthigh"><rect x="104" y="194" width="24" height="72" rx="10"/></g><g class="b" data-k="lknee"><circle cx="116" cy="276" r="9"/></g>
+            <g class="b" data-k="lshin"><rect x="106" y="287" width="20" height="74" rx="9"/></g><g class="b" data-k="lfoot"><ellipse cx="119" cy="370" rx="14" ry="7"/></g>
+            <g class="b" data-k="rear"><ellipse cx="74" cy="46" rx="4.5" ry="9"/></g><g class="b" data-k="lear"><ellipse cx="126" cy="46" rx="4.5" ry="9"/></g>
+            <g class="eye" data-k="reye"><circle cx="91" cy="42" r="4.5"/></g><g class="eye" data-k="leye"><circle cx="109" cy="42" r="4.5"/></g>
+            <rect x="89" y="74" width="22" height="5" rx="2" fill="#b9bcc4"/><path id="gem" d="M100 73 104.5 79.5 100 87 95.5 79.5Z"/>
+          </svg><p class="hint">그림 기준: 화면 왼쪽이 인물의 오른쪽</p></div>
+          <div class="ctrl">
+            <div id="groups"></div>
+            <div class="sum" id="sum" aria-live="polite"></div>
+            <button type="button" class="reset" id="mreset">초기화</button>
+          </div>
+        </div>
+        <div class="choker">
+          <div class="cktext">
+            <h3>초커</h3>
+            <p>모든 이행자와 승격자는 목에 은빛 건메탈 초커를 찬다. <br>가운데 박힌 마름모 보석이 계급을 보여 준다.</p>
+            <p class="cknote">승격하면 보석이 푸른색에서 붉은색으로 바뀐다.</p>
+            <div class="rumor"><b>소문</b> "초커를 벗으면 죽는다."</div>
+          </div>
+          <div class="ckpair"><figure><svg viewBox="10 30 300 110" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="cktm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9ebef"/><stop offset=".35" stop-color="#9ca1aa"/><stop offset=".6" stop-color="#4b4f57"/><stop offset="1" stop-color="#8a8f98"/></linearGradient>
+<linearGradient id="cktb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2c31"/><stop offset="1" stop-color="#121317"/></linearGradient>
+<linearGradient id="cktg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0d6fd1"/><stop offset=".5" stop-color="#7fd4ff"/><stop offset="1" stop-color="#0d6fd1"/></linearGradient>
+<filter id="cktf" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="7"/></filter>
+</defs>
+<path d="M34 70Q160 28 286 70" fill="none" stroke="url(#cktb)" stroke-width="13" stroke-linecap="round" opacity=".75"/>
+<path d="M34 70Q160 122 286 70" fill="none" stroke="url(#cktm)" stroke-width="15" stroke-linecap="round"/>
+<path d="M36 66Q160 117 284 66" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="1.3"/>
+<path d="M38 75Q160 127 282 75" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="1.2"/>
+<ellipse cx="160" cy="96" rx="20" ry="24" fill="#3fb6ff" class="ckg" opacity=".6" filter="url(#cktf)"/>
+<path d="M160 76 170 96 160 118 150 96Z" fill="url(#cktg)" stroke="#d9dde4" stroke-width="1.6"/>
+<path d="M160 76 164 96 160 118" fill="#fff" opacity=".22"/>
+<path d="M156 88 160 80 162 91Z" fill="#fff" opacity=".75"/>
+</svg><figcaption>이행자 · 푸른 보석</figcaption></figure><figure><svg viewBox="10 30 300 110" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="ckam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9ebef"/><stop offset=".35" stop-color="#9ca1aa"/><stop offset=".6" stop-color="#4b4f57"/><stop offset="1" stop-color="#8a8f98"/></linearGradient>
+<linearGradient id="ckab" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2c31"/><stop offset="1" stop-color="#121317"/></linearGradient>
+<linearGradient id="ckag" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7a0718"/><stop offset=".5" stop-color="#ff3a52"/><stop offset="1" stop-color="#7a0718"/></linearGradient>
+<filter id="ckaf" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="7"/></filter>
+</defs>
+<path d="M34 70Q160 28 286 70" fill="none" stroke="url(#ckab)" stroke-width="13" stroke-linecap="round" opacity=".75"/>
+<path d="M34 70Q160 122 286 70" fill="none" stroke="url(#ckam)" stroke-width="15" stroke-linecap="round"/>
+<path d="M36 66Q160 117 284 66" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="1.3"/>
+<path d="M38 75Q160 127 282 75" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="1.2"/>
+<ellipse cx="160" cy="96" rx="20" ry="24" fill="#e0102e" class="ckg" opacity=".6" filter="url(#ckaf)"/>
+<path d="M160 76 170 96 160 118 150 96Z" fill="url(#ckag)" stroke="#d9dde4" stroke-width="1.6"/>
+<path d="M160 76 164 96 160 118" fill="#fff" opacity=".22"/>
+<path d="M156 88 160 80 162 91Z" fill="#fff" opacity=".75"/>
+</svg><figcaption>승격자 · 붉은 보석</figcaption></figure></div>
+        </div></div>
+      <div class="sec"><h2>이행자 부서</h2><p>각 부서는 승격자가 지휘하고, 이행자가 실무를 맡고, 집행체가 감시한다.</p><div class="tbl"><table class="stack cards"><thead><tr><th>부서</th><th>하는 일</th></tr></thead><tbody id="depts"></tbody></table></div></div>
+      <div class="sec"><h2>무기</h2><p>오르도의 무기는 손에 드는 에너지 무기다. 임무 때만 지급받고 복귀하면 반납한다. 호신용 무기는 승격자만 늘 지니고, 이행자는 허가받은 극소수만 지닌다.</p>
+        <div class="arsenal" id="weapons"></div></div>
+    </div>
+
+    <div class="fac ap-c" id="f-aporia">
+      <div class="fhead">
+        <div class="sigil ap" role="img" aria-label="아포리아 문양"><svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<radialGradient id="ab" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#23242a"/><stop offset="1" stop-color="#070708" stop-opacity="0"/></radialGradient>
+<linearGradient id="aw" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#d9dce2"/><stop offset="1" stop-color="#8d929c"/></linearGradient>
+<filter id="an" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur in="SourceAlpha" stdDeviation="7" result="b1"/><feFlood flood-color="#b9c3d6" flood-opacity=".75"/><feComposite in2="b1" operator="in" result="g1"/><feGaussianBlur in="SourceAlpha" stdDeviation="2" result="b2"/><feFlood flood-color="#eef2f8"/><feComposite in2="b2" operator="in" result="g2"/><feMerge><feMergeNode in="g1"/><feMergeNode in="g2"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<circle cx="120" cy="120" r="118" fill="url(#ab)"/>
+<g class="ring" fill="none" stroke="#cfd3dc" stroke-opacity=".22" stroke-width=".8"><circle cx="120" cy="120" r="104" stroke-dasharray="1 5"/><circle cx="120" cy="120" r="84" stroke-opacity=".14"/><path d="M120 6V30M120 210V234M6 120H30M210 120H234" stroke-opacity=".3"/></g>
+<g filter="url(#an)" fill="url(#aw)" fill-rule="evenodd">
+<path d="M120 14C134 40 141 68 130 96 127 104 123 111 120 118 117 111 113 104 110 96 99 68 106 40 120 14ZM120 54 127 75 120 98 113 75Z"/>
+<path d="M120 128 133 160 120 220 107 160ZM120 148 125 163 120 190 115 163Z"/>
+<g id="aw1"><path d="M58 56C38 92 46 134 76 156 88 165 100 170 111 171 96 156 87 134 85 114 83 94 72 74 58 56Z"/><path d="M106 116C99 124 99 136 107 143L112 134Z"/></g>
+<use href="#aw1" transform="translate(240 0) scale(-1 1)"/>
+</g>
+<g fill="none" stroke="#6b707a" stroke-width=".9" stroke-opacity=".7"><path d="M120 20V50M120 102V114M120 132V146M120 194V214"/><path d="M60 66C46 96 52 128 78 150"/><path d="M180 66C194 96 188 128 162 150"/></g>
+</svg></div>
+        <div><span class="en">APORIA</span><h2>아포리아</h2><p class="motto">은신 · 생존 · 저항</p>
+          <p>로봇에게서 자신들을 지키려고 흩어져 있던 인간들이 모여 만든 조직. 로봇만 섬멸해 평화로운 일상으로 돌아가는 것이 목표다.</p>
+          <p>엘피스의 지하 생활구역에서 작물을 키우고 무기와 생필품을 만든다. 재료는 오르도와 맞닿은 최전선, 폐허지대에서 구해 온다.<br><span style="white-space:nowrap">직접 키우고 만들어야 하지만, 자유가 있다.</span></p>
+          <p>평화로운 시절을 직접 본 사람은 이제 아무도 없다. 그래도 그 시절은 전래동화처럼 전해지며 모두를 하나로 묶는다.</p></div>
+      </div>
+      <div class="sec"><p class="law">철칙: 기계로 인간을 해치지 않는다.</p>
+        <div class="ascards apterms"><div class="acol"><span class="en">ROBOT</span><h3>로봇</h3><p>집행체, 그리고 오르도에 속한 승격자와 이행자. 아날로그 무기로 상대한다.</p></div><div class="acol"><span class="en">HUMAN</span><h3>인간</h3><p>오르도에 속하지 않은 사람. 오르도를 떠나려는 사람과 넘어온 아스타도 포함한다.</p></div><div class="acol"><span class="en">MEANS</span><h3>"기계로"</h3><p>오르도의 에너지 무기와 기계 장치. 직접 만든 무기와 의수·의족은 해당하지 않는다.</p></div></div>
+        <p style="margin-top:18px">기준은 몸이 아니라 소속이다. 기계 몸을 가졌어도 오르도를 떠나면 로봇이 아니다.</p></div>
+      <div class="sec"><h2>엘피스 (Elpis)</h2>
+        <p style="max-width:none">아포리아의 영역 전체를 부르는 이름이다.<br>사람들이 숨어 사는 지하 <b>생활구역</b>과, 자원을 구하러 나가는 최전선 <b>폐허지대</b>로 나뉜다.</p>
+        <div class="ascards apterms" style="margin-top:22px"><div class="acol"><span class="en">NAME</span><h3>희망</h3><p>그리스어로 "희망". 판도라의 항아리에 모든 재앙이 빠져나간 뒤 마지막까지 남은 것에서 따왔다.</p></div><div class="acol"><span class="en">ENERGY</span><h3>에너지</h3><p>흔적이 작은 지하수 수력과 지열을 쓴다. 노획한 오르도 배터리는 에너지 무기 충전에만 아껴 쓴다.</p></div><div class="acol"><span class="en">COST</span><h3>대가</h3><p>100년 동안 거점과 사람을 여러 번 잃었고, 떠돌이와 아스타, 새로 태어난 아이들로 다시 채웠다. 약품과 도구는 늘 부족하다.</p></div></div></div>
+      <div class="sec"><h2>다섯 개의 조</h2><p style="max-width:none">지도자나 원로는 없다. 조장들의 회의와 모든 주민의 의견으로 방향을 정하고, 작전과 비상 상황에서는 조장의 지시를 따른다.</p>
+        <div class="tbl"><table class="stack cards"><thead><tr><th>조</th><th>하는 일</th></tr></thead><tbody id="teams"></tbody></table></div></div>
+      <div class="sec"><div class="ascards apterms two"><div class="acol"><span class="en">APOSTATA</span><h3>아스타</h3><p>오르도에서 자유를 느끼지 못하고 스스로 넘어온 사람들. 라틴어로 <span style="white-space:nowrap">"등을 돌린 자"</span>. 피보호자 출신은 아주 드물고 적응이 힘들다. 승격자·이행자 출신은 인간으로 받아들여지지만, 기계 몸 때문에 간첩으로 의심받는다.</p></div><div class="acol"><span class="en">ARMS</span><h3>무기</h3><p>화약총, 석궁, 근접 무기 등과 같은 아날로그 무기는 직접 만들어 승격자와 이행자에게 쓴다. 집행체에게는 노획한 에너지 무기를 아껴 쓴다. 아날로그 폭발물과 함정은 집행체에게도 통한다.</p></div></div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- MAP -->
+<section class="page" id="p-map">
+  <div class="phero"><div class="wrap"><span class="en">WORLD MAP</span><h1>세계 지도</h1><p>첨탑 도시를 중심으로 동북쪽에 오르도 통제 영역, 서쪽에 아포리아의 영역 엘피스.<br>전체 규모는 약 5,000km다.</p></div></div>
+  <div class="wrap" style="padding-bottom:60px">
+        <div class="mapgrid">
+      <div><div class="mapwrap" id="mapwrap"><img id="mapImg" src="img/map_clean.jpg" alt="아스트레아 시대 세계 지도"></div><div class="legend" aria-label="지도 표식"><div class="lg"><svg viewBox="0 0 28 14" aria-hidden="true"><path d="M14 1 17 10H11Z" fill="#e0102e"/><ellipse cx="14" cy="11" rx="6" ry="2" fill="none" stroke="#e0102e" stroke-width="1.2"/></svg><b>감시탑·중계기</b><span>오르도의 감시망</span></div><div class="lg"><svg viewBox="0 0 28 14" aria-hidden="true"><circle cx="14" cy="7" r="4.5" fill="none" stroke="#ff8a1f" stroke-width="1.6"/><circle cx="14" cy="7" r="1.6" fill="#ff8a1f"/></svg><b>검문소</b><span>수색·이송을 맡는 오르도의 검문 지점</span></div><div class="lg"><svg viewBox="0 0 28 14" aria-hidden="true"><path d="M2 9C8 3 18 11 26 5" fill="none" stroke="#9fd8ff" stroke-width="2"/></svg><b>주요 이동로</b><span>오르도가 통제하는 경로</span></div><div class="lg"><svg viewBox="0 0 28 14" aria-hidden="true"><path d="M2 9C8 3 18 11 26 5" fill="none" stroke="#ff8a1f" stroke-width="2" stroke-dasharray="3 2.5"/></svg><b>아포리아 이동로</b><span>비공식 루트</span></div><div class="lg"><svg viewBox="0 0 28 14" aria-hidden="true"><path d="M5 11 9.5 4 14 11 18.5 4 23 11" fill="none" stroke="#e9c46a" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 11 9.5 8.5 11 11M17 11 18.5 8.5 20 11" fill="none" stroke="#e9c46a" stroke-width="1.1"/><path d="M4 12.5H24" stroke="#e9c46a" stroke-width="1.3"/><circle cx="14" cy="9.6" r=".9" fill="#e9c46a"/></svg><b>엘피스 거점</b><span>은신처·쉼터</span></div><div class="lg"><svg viewBox="0 0 28 14" aria-hidden="true"><path d="M2 7H26" stroke="#ece9e5" stroke-width="1.6" stroke-dasharray="3 2.5"/></svg><b>엘피스 안 경계</b><span>폐허지대와 생활구역의 경계</span></div></div><div class="rlist" id="rlist"></div></div>
+      <div class="panel card" id="panel" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap"><span><b class="en" style="color:var(--ink)">ASTRAEA ERA</b></span><nav><a href="#world">세계관</a><a href="#astraea">아스트레아</a><a href="#ordo">오르도</a><a href="#aporia">아포리아</a><a href="#map">지도</a></nav></div></footer>
+
+<script>
+{
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const row=a=>'<tr>'+a.map(x=>'<td>'+x+'</td>').join('')+'</tr>';
+const ranks=[['근원 (Origin)','최초의 AI 아스트레아. 모습을 드러낸 적 없이 목소리로만 존재하며, 그 목소리는 집행체만 직접 듣는다.'],['집행체 (Executor)','아스트레아가 생산한 인간형 순수 로봇. 질서 유지, 인간 관리, 제압과 군사 작전을 맡는다. 말은 하지만 감정은 없다.'],['승격자 (Ascendant)','전투에 필요한 부위를 고도로 기계화한 전직 인간. 상위 존재로 분류되며 부서를 지휘한다.<br>더 광신적이지만, 인간 출신이라 집행체보다 낮게 대우받는다.'],['이행자 (Transitional)','신체 일부를 기계화한 인간. 승격 기준에 맞춰 몸과 행동을 단계적으로 조정받으며 실무를 맡는다.'],['피보호자 (Ward)','보호구역에서 보호받는 인간. 20살이 되면 반드시 이행자가 된다. 선택이 아니라 법칙이다.']];
+const depts=[['검문소 운영반','검문소에서 수색과 이송을 맡는다'],['경계선 정찰반','폐허지대와의 경계를 정찰하고 아포리아의 움직임을 살핀다'],['무기관리반','오르도 무기를 정비·보급·관리하고, 승격자와 이행자의 신체 부품을 정비한다'],['출산관리반','이행자와 승격자의 출산을 관리하고, 아이를 13살까지 키운다'],['피보호자 구역 관리반','14~19살 피보호자와 새로 들어온 성인을 관리하고, 20살이 된 피보호자를 이행자로 보낸다']];
+const teams=[['기록조','옛 도서관을 관리하고, 평화로웠던 시절의 이야기와 싸움의 기록을 다음 세대에 전한다'],['수호조','지하 생활구역을 지키고 침입에 대응한다'],['정비조','아날로그 무기를 만들고, 노획한 에너지 무기를 개조·충전하고, 의수를 만든다'],['정찰 및 파밍조','폐허지대를 정찰하고 자원을 구해 온다'],['파견조','오르도인 척 위장해 정보를 가져온다. 위장은 검문소까지 통과할 수 있다']];
+const cmp=[['이끄는 존재','아스트레아 한 존재','조장 회의와 모든 주민'],['거주지','첨탑 도시, 보호구역, 통제 영역','엘피스 지하 생활구역'],['생활','일하지 않아도 먹고살 수 있지만 자유가 없다','직접 키우고 만들어야 하지만 자유가 있다'],['기계','기계 부위를 드러낸다','의수·의족을 피부로 덮는다'],['무기','에너지 무기. 인간 출신은 임무 때만 지급','아날로그 무기 + 노획한 에너지 무기'],['복장','검정 군복과 크림슨 레드','검정·회색 후드 망토']];
+const R='#e0102e',V='#9a7bff',G='#cfcfd3';
+const regions=[
+ {n:'첨탑 도시',e:'SPIRE',x:57,y:42,c:R,w:'오르도 · 중앙',img:'img/spire.webp',t:'오르도의 중추이자 절대 권력의 중심이다.<br>연산 중추가 있어 아스트레아의 의지가<br>전 세계의 집행체에게 전파된다.<br>들어간 인간은 돌아오지 못한다는 소문이 돈다.'},
+ {n:'북부 보호구역 α',e:'WARD α',x:39,y:30,c:R,w:'오르도 · 첨탑 도시 북서쪽',img:'img/ward_a.webp',t:'오르도가 생각하는 이상적인 인간 사회를<br>가장 직접적으로 구현한 돔형 관리 도시.<br>건축부터 생활환경까지 모두 규격화되어 있고,<br>인간은 정해진 질서 안에서 안전하게 산다.'},
+ {n:'남부 보호구역 β',e:'WARD β',x:77,y:63,c:R,w:'오르도 · 첨탑 도시 남동쪽',img:'img/ward_b.webp',t:'인간에게 가장 이상적인 생활환경을<br>제공하는 돔형 관리 도시.<br>북부보다 건축이 부드럽고 자연이 풍부하다.<br>주민이 스스로 행복하다고 느끼도록<br>설계된 도시다.'},
+ {n:'오르도 통제 영역',e:'ORDO',x:82,y:16,c:R,w:'오르도 · 동북부, 남부 일부',img:'img/ordo_zone.webp',img:'img/ordo_zone.webp',t:'기계 문명이 완전히 장악한 지역.<br>집행체만 머무는 기계의 구역으로,<br>감시탑과 중계기가 서 있다.'},
+ {n:'엘피스 – 폐허지대',e:'ELPIS · RUINS',x:31,y:53,c:V,w:'아포리아 · 서부',img:'img/elpis_ruins.webp',pos:'50% 52%',t:'대정화로 무너진 옛 도시들.<br>아포리아의 자원 파밍 구역이자<br>경계선 정찰반과 마주치는 최전선이다.<br>지하철 터널과 무전기 같은 아날로그 기술,<br>그리고 숨어 사는 떠돌이가 남아 있다.'},
+ {n:'엘피스 – 생활구역',e:'ELPIS · HOME',x:23,y:75,c:V,w:'아포리아 · 서부 남쪽',img:'img/elpis_home.webp',pos:'50% 64%',t:'아포리아의 지하 거주지.<br>작물을 키우고 무기와 생필품을 만든다.<br>은신처와 쉼터가 흩어져 있고,<br>옛 도서관이 기록조의 손에 남아 있다.'},
+ {n:'북부 산맥',e:'NORTH RANGE',x:38,y:8,c:G,w:'자연 경계',img:'img/north_range.webp',pos:'50% 35%',t:'세계 북쪽을 가로지르는 산맥.<br>어느 세력에도 속하지 않는다.'}];
+
+$('#ranks').innerHTML=ranks.map(row).join('');
+$('#depts').innerHTML=depts.map(row).join('');
+$('#weapons').innerHTML=[['w_rifle','소총','경계선 정찰반','가볍고 사거리가 길다'],['w_baton','충격봉','검문소 운영반','제압용'],['w_smg','단거리 화기','검문소 운영반',''],['w_pistol','권총','승격자의 호신용','허가받은 이행자도 지닐 수 있다'],['w_knife','잭나이프','승격자의 호신용','허가받은 이행자도 지닐 수 있다']].map(w=>'<div class="arm"><div class="armimg"><img src="img/'+w[0]+'.webp" alt="'+w[1]+'">'+(w[0]!=='w_knife'?'<img class="glow '+w[0]+'" src="img/'+w[0]+'_glow.webp" alt="">':'')+'</div><div class="armtx"><h3>'+w[1]+'</h3><p class="armu">'+w[2]+'</p>'+(w[3]?'<p class="armd">'+w[3]+'</p>':'')+'</div></div>').join('');
+$('#teams').innerHTML=teams.map(row).join('');
+
+
+/* mech builder */
+const toggles=[['눈',[['reye','오른쪽 눈'],['leye','왼쪽 눈']]],['귀',[['rear','오른쪽 귀'],['lear','왼쪽 귀']]]];
+const LV={arm:[['none','없음',[]],['hand','손',['fing','hand']],['fore','팔꿈치 아래',['fing','hand','armF']],['full','팔 전체',['fing','hand','armF','armU']]],
+ leg:[['none','없음',[]],['foot','발',['foot']],['below','무릎부터',['foot','shin','knee']],['full','다리 전체',['foot','shin','knee','thigh']]]};
+const limbs=[['rarm','오른팔','arm','r'],['larm','왼팔','arm','l'],['rleg','오른다리','leg','r'],['lleg','왼다리','leg','l']];
+const partLv={fing:'hand',hand:'hand',armF:'fore',armU:'full',foot:'foot',shin:'below',knee:'below',thigh:'full'};
+const fresh=()=>({r:'t',t:['reye'],l:{rarm:'none',larm:'none',rleg:'none',lleg:'none'}});
+let ms=fresh();try{const v=JSON.parse(localStorage.getItem('astraea-mech4')||'null');if(v&&v.l)ms=v}catch(e){}
+const mech=$('#mech');
+$('#groups').innerHTML=toggles.map(g=>'<div class="lbl">'+g[0]+'</div><div class="chips">'+g[1].map(x=>'<button type="button" data-t="'+x[0]+'">'+x[1]+'</button>').join('')+'</div>').join('')
+ +limbs.map(L=>'<div class="lbl">'+L[1]+'</div><div class="chips" role="radiogroup" aria-label="'+L[1]+'">'+LV[L[2]].map(v=>'<button type="button" role="radio" data-limb="'+L[0]+'" data-v="'+v[0]+'">'+v[1]+'</button>').join('')+'</div>').join('');
+const onKeys=()=>{const k=[...ms.t];limbs.forEach(L=>{const v=LV[L[2]].find(x=>x[0]===ms.l[L[0]]);(v?v[2]:[]).forEach(q=>k.push(L[3]+(q==='armF'||q==='armU'?q.replace('arm','arm'):q)))});return k};
+const keyOf=(side,q)=>({fing:side+'fing',hand:side+'hand',armF:side+'armF',armU:side+'armU',foot:side+'foot',shin:side+'shin',knee:side+'knee',thigh:side+'thigh'})[q];
+const mr=()=>{
+    $$('#groups [data-t]').forEach(b=>b.setAttribute('aria-pressed',ms.t.includes(b.dataset.t)));
+  $$('#groups [data-limb]').forEach(b=>b.setAttribute('aria-checked',ms.l[b.dataset.limb]===b.dataset.v));
+  const on=new Set(ms.t);limbs.forEach(L=>{const v=LV[L[2]].find(x=>x[0]===ms.l[L[0]]);(v?v[2]:[]).forEach(q=>on.add(keyOf(L[3],q)))});
+  $$('#bodySvg [data-k]').forEach(g=>g.classList.toggle('on',on.has(g.dataset.k)));
+  const sel=[];toggles.forEach(g=>g[1].forEach(x=>{if(ms.t.includes(x[0]))sel.push(x[1])}));
+  limbs.forEach(L=>{if(ms.l[L[0]]!=='none')sel.push(ms.l[L[0]]==='full'?L[1]+' 전체':L[1]+' '+LV[L[2]].find(x=>x[0]===ms.l[L[0]])[1])});
+  $('#sum').innerHTML='<dt>기계화</dt><dd>'+(sel.length?sel.join(', '):'아직 고르지 않음')+'</dd>';
+  try{localStorage.setItem('astraea-mech4',JSON.stringify(ms))}catch(e){}};
+$('#groups').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.t){const k=b.dataset.t;ms.t=ms.t.includes(k)?ms.t.filter(x=>x!==k):[...ms.t,k]}else{ms.l[b.dataset.limb]=b.dataset.v}mr()});
+$$('#bodySvg [data-k]').forEach(g=>g.addEventListener('click',()=>{const k=g.dataset.k,side=k[0],q=k.slice(1);
+  if(['eye','ear'].includes(q)){ms.t=ms.t.includes(k)?ms.t.filter(x=>x!==k):[...ms.t,k]}
+  else{const isArm=['fing','hand','armF','armU'].includes(q),limb=side+(isArm?'arm':'leg'),lv=partLv[q];ms.l[limb]=ms.l[limb]===lv?'none':lv}mr()}));
+$('#mreset').addEventListener('click',()=>{ms=fresh();ms.t=[];mr()});
+mr();
+
+/* map */
+const mw=$('#mapwrap'),panel=$('#panel'),rl=$('#rlist');
+const SH={0:'P55.6 23.1 55.6 24.3 56.6 24.0 56.5 23.3|P59.0 22.4 58.5 22.9|P57.0 20.6 56.2 21.2 56.6 21.4|P57.8 17.2 57.5 17.9 56.8 17.7 57.2 18.4 56.5 19.8 57.1 19.6 57.7 20.2 57.2 27.8 56.7 28.6 56.4 27.8 56.2 28.6 55.3 28.4 53.7 29.5 55.0 29.7 54.9 32.6 54.3 32.8 54.1 31.6 53.8 32.9 49.8 34.4 46.5 36.9 43.5 41.5 42.5 46.3 43.3 51.8 45.7 56.2 49.8 59.6 55.0 61.3 60.5 61.0 64.1 59.6 66.4 57.9 70.0 53.3 70.9 50.7 71.4 47.7 70.7 42.4 68.2 37.9 65.0 35.0 61.1 33.2 60.8 31.8 60.5 33.0 59.9 32.7 59.5 29.4 61.2 29.3 59.5 28.4 59.3 25.0 59.2 29.7 58.8 30.3 58.4 30.0 58.6 26.9 58.3 26.3 58.0 20.5 58.8 20.1|P57.5 15.7 58.0 16.2 57.9 15.6',
+1:'P30.0 30.9 31.4 32.4 34.1 33.2 33.6 34.9 34.6 37.6 45.3 37.6 46.4 34.9 45.7 33.1 47.9 32.2 48.9 31.2 47.7 29.5 46.7 25.2 45.1 22.3 43.1 20.3 40.3 19.2 36.8 19.8 34.2 21.9 32.2 25.2 31.3 29.6',
+2:'P67.1 64.8 67.9 66.1 71.8 67.3 71.3 69.3 72.2 72.3 83.2 72.3 84.2 69.3 83.4 66.6 85.2 65.1 84.9 64.2 84.0 63.5 83.1 59.3 81.5 56.3 79.5 54.4 77.0 53.3 73.6 53.9 71.1 56.0 69.3 59.3 68.3 63.5',
+3:'P54.1 78.2 51.9 77.9 51.0 78.8 49.6 78.4 50.2 81.2 49.3 83.6 47.6 83.3 47.2 82.3 47.3 81.2 46.4 80.9 42.9 82.4 41.8 85.3 38.1 89.5 39.4 89.6 39.9 90.4 38.7 94.2 40.7 93.3 41.6 89.4 42.7 88.6 43.8 88.8 44.0 86.9 44.8 85.7 45.7 85.7 46.9 86.9 48.8 86.9 49.3 87.8 49.3 88.8 50.2 89.6 52.4 88.7 52.3 86.9 52.9 85.4 55.5 84.6 54.8 83.0 54.7 80.1|P53.2 11.9 54.0 14.0 56.0 14.0 57.4 15.2 56.9 16.8 54.4 18.0 55.4 21.8 56.5 21.4 57.3 22.0 57.4 23.0 56.7 24.3 57.1 25.1 58.7 26.1 59.6 25.7 58.7 24.5 58.6 22.9 59.3 21.9 61.0 21.3 61.5 22.8 60.6 25.6 61.8 25.6 62.7 27.0 65.7 28.6 66.5 31.2 67.4 31.0 68.5 32.0 69.9 31.5 71.9 34.4 72.7 34.1 73.8 34.9 74.9 36.9 78.0 37.0 79.3 39.6 80.1 40.0 81.3 39.7 82.1 41.0 86.1 43.1 88.7 40.8 91.5 43.3 92.4 43.0 95.0 43.8 94.4 40.9 95.1 39.7 95.1 38.5 96.1 35.9 95.4 34.7 93.9 34.7 93.4 33.1 92.4 32.1 91.0 32.6 89.9 31.9 89.5 30.6 92.4 25.9 94.4 26.1 95.4 23.6 96.4 23.4 96.8 22.6 96.7 20.9 98.2 18.3 96.5 17.0 95.4 17.6 94.3 16.9 93.2 17.2 91.3 14.1 89.4 14.5 88.9 13.4 89.2 11.5 87.5 8.4 87.8 6.1 87.0 4.9 85.4 5.6 84.6 6.6 81.0 6.4 80.2 5.3 78.7 4.5 77.1 6.2 75.1 6.5 73.6 3.8 73.9 1.7 73.0 0.0 72.0 0.0 70.8 2.3 68.4 4.3 67.1 4.4 66.2 2.9 65.0 2.6 61.8 7.4 59.3 8.9 59.0 10.1 58.2 10.9 57.5 10.9 56.9 10.0 55.6 9.3',
+4:'P4.0 48.6 4.4 54.3 3.5 56.5 10.8 56.0 17.5 61.1 15.8 68.2 33.9 72.9 38.8 75.7 42.9 78.8 46.8 76.0 52.1 70.9 51.3 63.6 44.4 60.4 41.3 57.0 39.5 52.1 37.2 49.3 35.2 49.2 30.7 40.9 27.9 36.7 24.0 32.7 23.4 32.7 20.9 35.4 13.1 41.2 7.2 44.6',
+5:'P2.6 58.0 2.5 61.2 0.7 63.8 0.0 64.1 0.0 69.5 0.7 69.8 5.1 76.7 6.7 84.9 10.4 88.0 13.3 89.6 16.2 87.3 16.9 87.6 17.9 89.6 27.8 86.9 29.2 89.0 31.0 88.6 32.8 90.4 33.0 94.1 33.8 97.2 35.0 96.9 36.8 97.7 38.2 97.2 36.5 89.8 36.7 85.4 40.2 81.0 42.9 78.8 33.9 73.0 15.6 68.2 17.4 61.1 10.8 56.1 3.4 56.6',
+6:'P55.9 7.9 54.3 5.3 52.2 0.0 50.3 0.0 50.3 2.3 48.5 3.8 47.7 3.7 46.9 2.7 43.9 3.0 42.5 1.8 40.5 3.1 39.3 3.1 38.5 2.1 38.1 0.0 35.0 0.0 34.9 2.9 33.7 3.9 32.7 3.1 31.7 0.0 31.0 0.0 29.1 3.5 28.3 3.5 27.2 2.5 25.0 4.4 26.7 4.8 27.9 5.7 28.6 7.0 31.5 6.4 32.3 7.7 32.1 9.1 31.4 10.0 29.6 10.5 28.0 13.1 26.7 13.3 25.5 11.7 24.8 12.6 24.6 15.2 21.6 19.1 22.0 21.3 21.6 22.3 21.6 25.7 21.1 26.8 20.4 27.1 19.3 26.2 15.3 26.4 14.0 29.0 13.2 29.3 10.8 29.0 8.2 26.8 7.2 26.6 5.8 28.2 4.8 28.2 3.1 30.9 1.4 30.5 0.7 32.0 3.4 34.7 5.1 35.1 5.9 36.4 7.1 33.6 9.5 33.7 10.0 34.8 9.8 36.2 8.0 38.5 6.9 39.1 7.9 39.9 15.1 38.2 17.5 36.4 16.2 34.4 16.3 32.9 17.0 31.5 18.3 31.5 19.2 34.4 19.8 34.2 23.3 30.7 25.7 26.6 25.9 24.9 26.7 23.8 27.8 23.4 30.2 19.2 33.0 18.0 33.8 16.4 36.2 16.1 37.7 14.3 39.6 15.0 41.2 13.4 42.5 13.0 43.5 13.8 43.8 15.5 47.8 14.8 48.5 15.1 49.3 16.8 53.9 17.3 54.4 15.4 53.4 14.0 53.2 12.6 53.7 11.5 55.2 11.0'};
+const toD=v=>v.split('|').map(q=>{const n=q.slice(1).trim().split(/\s+/).map(Number);if(q[0]==='E'){const[cx,cy,rx,ry]=[n[0]*15.35,n[1]*10.24,n[2]*15.35,n[3]*10.24];return`M${cx-rx} ${cy}a${rx} ${ry} 0 1 0 ${rx*2} 0a${rx} ${ry} 0 1 0 ${-rx*2} 0Z`}let d='M';for(let k=0;k<n.length;k+=2)d+=(k?'L':'')+(n[k]*15.35).toFixed(1)+' '+(n[k+1]*10.24).toFixed(1);return d+'Z'}).join('');
+const order=[6,3,4,5,0,1,2];
+mw.insertAdjacentHTML('beforeend','<div class="zdim"></div>'+regions.map((r,i)=>'<img class="zimg" data-i="'+i+'" src="img/zone'+i+'.webp" alt="">').join('')+'<svg class="zones" viewBox="0 0 1535 1024" preserveAspectRatio="none">'+order.map(i=>'<path class="zone" data-i="'+i+'" d="'+toD(SH[i])+'" style="--c:'+regions[i].c+'" role="button" tabindex="0" aria-label="'+regions[i].n+'"><title>'+regions[i].n+'</title></path>').join('')+'</svg>');
+rl.innerHTML=regions.map((r,i)=>'<button type="button" data-i="'+i+'">'+r.n+'</button>').join('');
+let cur=-1;const unpick=()=>{cur=-1;panel.innerHTML='';$$('.zone,#rlist button').forEach(b=>b.classList.remove('sel'));$$('.zimg').forEach(z=>z.classList.remove('on'));mw.classList.remove('picked')};
+const pick=i=>{if(i===cur){unpick();return}cur=i;const r=regions[i];panel.innerHTML=(r.img?'<div class="zoom photo'+(r.fit?' fit':'')+'">'+(r.fit?'<img class="bg" src="'+r.img+'" alt="">':'')+'<img src="'+r.img+'" alt="'+r.n+'"'+(r.pos?' style="object-position:'+r.pos+'"':'')+'></div>':'<div class="zoom"><img src="img/map_clean.jpg" alt=""></div>')+'<span class="who" style="color:'+r.c+'">'+r.w+'</span><h3>'+r.n+'</h3><p class="en" style="color:var(--mute);font-size:13px">'+r.e+'</p><p>'+r.t+'</p>';$$('.zone,#rlist button').forEach(b=>b.classList.toggle('sel',+b.dataset.i===i));$$('.zimg').forEach(z=>z.classList.toggle('on',+z.dataset.i===i));mw.classList.add('picked');placeZoom(r)};
+const placeZoom=r=>{const z=panel.querySelector('.zoom');if(!z||r.img)return;const W=z.clientWidth,H=z.clientHeight,iw=W*3.2,ih=iw*1024/1535;const L=Math.min(0,Math.max(W-iw,W/2-r.x/100*iw)),T=Math.min(0,Math.max(H-ih,H/2-r.y/100*ih));const im=z.querySelector('img');im.style.width=iw+'px';im.style.left=L+'px';im.style.top=T+'px';};
+addEventListener('resize',()=>{const k=$('#rlist .sel');if(k)placeZoom(regions[+k.dataset.i])});
+$$('.zone').forEach(z=>{const im=mw.querySelector('.zimg[data-i="'+z.dataset.i+'"]');z.addEventListener('mouseenter',()=>im.classList.add('hov'));z.addEventListener('mouseleave',()=>im.classList.remove('hov'))});
+mw.addEventListener('click',e=>{if(!e.target.closest('.zone'))unpick()});
+$$('.zone,#rlist button').forEach(b=>{b.addEventListener('click',()=>pick(+b.dataset.i));b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(+b.dataset.i)}})});
+
+
+/* waveform */
+const ws=$('#waveSvg'),wb=$('#wave');let ph=0,wt;
+const drawWave=()=>{const W=wb.clientWidth,H=wb.clientHeight,mid=H/2,L=[[1,.9,1.4,'#e0102e',1.6],[.7,1.6,-.9,'#e0102e',1],[.45,2.4,.6,'#7d0a1b',1],[.3,3.3,-.4,'#cfcfd3',.8]];let s='';
+L.forEach(([amp,f,sp,c,wd],k)=>{let d='';const N=Math.max(60,Math.floor(W/8));for(let i=0;i<=N;i++){const x=i/N*W,u=i/N,env=Math.sin(Math.PI*u)**1.6,y=mid+Math.sin(u*Math.PI*2*f+ph*sp+k)*env*H*.28*amp*(.75+.25*Math.sin(ph*.4+k));d+=(i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1)}s+='<path d="'+d+'" fill="none" stroke="'+c+'" stroke-width="'+wd+'" stroke-opacity="'+(k?.55:.9)+'"/>'});
+s+='<line x1="0" y1="'+mid+'" x2="'+W+'" y2="'+mid+'" stroke="#ffffff" stroke-opacity=".08"/>';ws.innerHTML=s};
+const waveRO=new ResizeObserver(drawWave);waveRO.observe(wb);
+const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const loop=()=>{ph+=.012;drawWave();wt=requestAnimationFrame(loop)};
+
+/* question video */
+{const qv=$('#qv'),qvid=$('#qvid');const fin=()=>qv.classList.add('done');
+if(matchMedia('(prefers-reduced-motion: reduce)').matches){fin()}else{
+qvid.addEventListener('ended',fin);qvid.addEventListener('error',fin);
+qvid.addEventListener('timeupdate',()=>{if(qvid.duration&&qvid.currentTime>qvid.duration-1)fin()});
+const qio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting&&!qv.classList.contains('done')){const pr=qvid.play();if(pr&&pr.catch)pr.catch(fin)}})},{threshold:.5});qio.observe(qv)}}
+/* hook */
+const kv=$('#hookBox');let ht;
+
+/* router */
+const pages={hook:'home',home:'home',world:'world',astraea:'astraea',ordo:'faction',aporia:'faction',faction:'faction',map:'map'};
+const route=()=>{let h=location.hash.slice(1);if(!pages[h])h='home';const p=pages[h];
+  $$('.page').forEach(x=>x.classList.toggle('on',x.id==='p-'+p));
+  $$('.menu a').forEach(a=>{const t=a.getAttribute('href').slice(1);a.classList.toggle('on',(pages[t]||t)===p)});
+  if(p==='faction'){const f=h==='aporia'?'aporia':'ordo';$('#f-ordo').classList.toggle('on',f==='ordo');$('#f-aporia').classList.toggle('on',f==='aporia');$('#tO').classList.toggle('on',f==='ordo');$('#tA').classList.toggle('on',f==='aporia')}
+  cancelAnimationFrame(wt);if(p==='astraea'){if(still)drawWave();else loop()}
+  $('#menu').classList.remove('open');$('#burger').setAttribute('aria-expanded','false');
+  if(h==='hook')setTimeout(()=>$('#hookBox').scrollIntoView(),30);else window.scrollTo(0,0);hdr()};
+addEventListener('hashchange',route);
+const hd=$('#hdr');const hdr=()=>hd.classList.toggle('solid',scrollY>40||!$('#p-home').classList.contains('on'));
+addEventListener('scroll',hdr,{passive:true});
+$('#burger').addEventListener('click',()=>{const o=$('#menu').classList.toggle('open');$('#burger').setAttribute('aria-expanded',o)});
+route();
+
+/* boot */
+const boot=$('#boot'),bt=$('#bootTxt');let seen=false;try{seen=sessionStorage.getItem('astraea-boot')==='1'}catch(e){}
+const bootLines=['> ASTRAEA NETWORK ... 연결 중','> 첨탑 도시 연산 중추 ... 응답','> 대정화 이후 100년','> 피보호자 신원 확인 ... 미등록','> 근원이 당신에게 말을 겁니다.'];
+const endBoot=()=>{boot.classList.add('off');try{sessionStorage.setItem('astraea-boot','1')}catch(e){}};
+$('#skip').addEventListener('click',endBoot);
+if(seen||still){boot.classList.add('off')}else{let i=0;const step=()=>{if(i<bootLines.length){bt.textContent+=(i?'\n':'')+bootLines[i++];setTimeout(step,520)}else setTimeout(endBoot,700)};step()}
+}
+</script>
+</body>
+</html>
