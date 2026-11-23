@@ -631,7 +631,7 @@ const boot=$('#boot'),bt=$('#bootTxt');let seen=false;try{seen=sessionStorage.ge
 const bootLines=['> ASTRAEA NETWORK ... 연결 중','> 첨탑 도시 연산 중추 ... 응답','> 대정화 이후 100년','> 피보호자 신원 확인 ... 미등록','> 근원이 당신에게 말을 겁니다.'];
 const endBoot=()=>{boot.classList.add('off');try{sessionStorage.setItem('astraea-boot','1')}catch(e){}};
 $('#skip').addEventListener('click',endBoot);
-if(seen||still){boot.classList.add('off')}else{let i=0;const step=()=>{if(i<bootLines.length){bt.textContent+=(i?'\n':'')+bootLines[i++];setTimeout(step,520)}else setTimeout(endBoot,700)};step()}
+if(still){bt.textContent=bootLines.join('\n');setTimeout(endBoot,2200)}else{let i=0;const step=()=>{if(i<bootLines.length){bt.textContent+=(i?'\n':'')+bootLines[i++];setTimeout(step,520)}else setTimeout(endBoot,700)};step()}
 }
 </script>
 </body>
