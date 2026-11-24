@@ -621,6 +621,9 @@ const route=()=>{let h=location.hash.slice(1);if(!pages[h])h='home';const p=page
   $('#menu').classList.remove('open');$('#burger').setAttribute('aria-expanded','false');
   if(h==='hook')setTimeout(()=>$('#hookBox').scrollIntoView(),30);else window.scrollTo(0,0);hdr()};
 addEventListener('hashchange',route);
+try{history.scrollRestoration='manual'}catch(e){}
+addEventListener('load',()=>{if(location.hash!=='#hook')window.scrollTo(0,0)});
+addEventListener('pageshow',e=>{if(e.persisted&&location.hash!=='#hook')window.scrollTo(0,0)});
 const hd=$('#hdr');const hdr=()=>hd.classList.toggle('solid',scrollY>40||!$('#p-home').classList.contains('on'));
 addEventListener('scroll',hdr,{passive:true});
 $('#burger').addEventListener('click',()=>{const o=$('#menu').classList.toggle('open');$('#burger').setAttribute('aria-expanded',o)});
