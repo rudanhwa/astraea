@@ -604,7 +604,7 @@ const loop=()=>{ph+=.012;drawWave();wt=requestAnimationFrame(loop)};
 
 /* question video */
 {const qv=$('#qv'),qvid=$('#qvid');const fin=()=>qv.classList.add('done');
-if(matchMedia('(prefers-reduced-motion: reduce)').matches){fin()}else{
+{
 qvid.addEventListener('ended',fin);qvid.addEventListener('error',fin);
 qvid.addEventListener('timeupdate',()=>{if(qvid.duration&&qvid.currentTime>qvid.duration-1)fin()});
 const qio=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting&&!qv.classList.contains('done')){const pr=qvid.play();if(pr&&pr.catch)pr.catch(fin)}})},{threshold:.5});qio.observe(qv)}}
